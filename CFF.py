@@ -1,3 +1,6 @@
+import numpy as np
+from PIL import Image
+
 class NeuronalNetwork:
     def __init__(self):
         result = []
@@ -6,10 +9,14 @@ class NeuronalNetwork:
     # partie pré-gestion des données
 
     def OpenIMGtxt(self):
-        return None # matrice de pixel
+        #ouvre une image et la convertit en matrice numpy,  avec des niveaux de gris entre 0 et 255
+        image = Image.open("nom image")
+        imageGris = image.convert("L")
+        imageMatrice = np.asarray(imageGris)
+        return imageMatrice
 
     def DecImg(self):
-        return None # matrice de matrice de mm taille
+        return None # pour centrer l'image
 
     def Analyse(self):
         for i in self.DecImg():
@@ -19,5 +26,3 @@ class NeuronalNetwork:
                 value = value
                 self.result.append(value)
         return None
-
-

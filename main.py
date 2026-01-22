@@ -295,23 +295,3 @@ UtilisationPostTraining(1, [164])
 
 
 # environ 90% de taux de réussite
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
