@@ -194,6 +194,7 @@ def trainingtesting(x_train,label_train,x_test, label_test,boucle=10):
         if reponse == label_test[i]:
             somme += 1
     print("L'IA reconnait suite a son entrainement :",(somme/len(label_test))*100,"% des images")
+
 def traintrain(x_train,label_train,x_test, label_test,boucle=5):
     perc = Neuronneclass([784, 128, 64, 10], 0.05)
     # training
@@ -206,6 +207,7 @@ def traintrain(x_train,label_train,x_test, label_test,boucle=5):
             resultats = perc.feedforward(pixel)
             delta = perc.delta_mat(label, resultats)
             perc.backwardpropagation2(delta, resultats)
+    
     # test
     somme=0
     for i in range(len(x_train)):
@@ -221,3 +223,30 @@ def traintrain(x_train,label_train,x_test, label_test,boucle=5):
 
 trainingtesting(x_train, label_train,x_test, label_test)
 #traintrain(x_train, label_train,x_test, label_test)
+
+
+
+"""    def load_weights(self, filename="poids_reseau.npz"):  # pour utiliser les données obtenue avec l'entrainement précédant
+        data = np.load(filename)
+        self.W = {}
+        self.b = {}
+
+        for key in data.files:
+            if key.startswith("W"):
+                idx = int(key[1:])
+                self.W[idx] = data[key]
+            elif key.startswith("b"):
+                idx = int(key[1:])
+                self.b[idx] = data[key]
+
+        # Empêche forward de réinitialiser les poids
+        self.initialized = True
+
+    def save_initial_weights(self, filename="poids_initiaux.npz"):
+        # np.savez exige des clés string
+        W_str = {f"W{k}": v for k, v in self.W.items()}
+        b_str = {f"b{k}": v for k, v in self.b.items()}
+
+        all_params = {**W_str, **b_str}
+
+        np.savez(filename, **all_params)"""
