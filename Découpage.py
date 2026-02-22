@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 def binarise(image, seuil=200):
     h, w = image.shape
@@ -11,10 +12,11 @@ def binarise(image, seuil=200):
 
 
 
-def binarise2(image, seuil=200):
-    # texte sombre → 0
-    # fond clair → 1
-    return np.where(image > seuil, 1, 0)
+def binarise2(image):
+    # Binarisation automatique + inversion pour avoir texte = 1
+    _, img_bin = cv2.threshold(image, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    return img_bin
+
 
 
 
@@ -43,28 +45,34 @@ def decoupage_horizontal(matrice):
 
 def decoupage_vertical(liste_matrice):
     images_finales = []
-
     for matrice in liste_matrice:
-        # On somme sur l'axe 0 → somme des lignes → profil vertical
-        somme = np.sum(matrice, axis=0)
+        # somme verticale → on somme sur les colonnes
+        somme = np.sum(matrice, axis=1)
 
-        lettres = []
-        debut = None
+        lignes_finales = []
+        n = 0
+        debut_trouve = False
+        start_x = 0
 
-        for x in range(len(somme)):
-            if somme[x] != 0 and debut is None:
-                debut = x
-            elif somme[x] == 0 and debut is not None:
-                lettres.append(matrice[:, debut:x])
-                debut = None
+        while n < len(somme):
+            if somme[n] != 0:
+                if not debut_trouve:
+                    start_x = n
+                    debut_trouve = True
+            else:
+                if debut_trouve:
+                    end_x = n
+                    tranche = matrice[start_x:end_x, :]
+                    lignes_finales.append(tranche)
+                    debut_trouve = False
+            n += 1
 
-        if debut is not None:
-            lettres.append(matrice[:, debut:len(somme)])
+        if debut_trouve:
+            lignes_finales.append(matrice[start_x:len(matrice), :])
 
-        images_finales.append(lettres)
+        images_finales.append(lignes_finales)
 
     return images_finales
-
 
 
 def remplissage1(liste_images,resolution=28):
