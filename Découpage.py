@@ -20,59 +20,53 @@ def binarise2(image):
 
 
 
-def decoupage_horizontal(matrice):
+def decoupage_horizontal(matrice, seuil=5):
     somme = np.sum(matrice, axis=1)
     lignes_finales = []
-    n = 0
-    debut_trouve = False
-    start_y = 0
-    while n < len(somme):
-        if somme[n] != 0:
-            if debut_trouve == False:
-                start_y = n
-                debut_trouve = True
-        else:
-            if debut_trouve == True:
-                end_y = n
-                tranche = matrice[start_y: end_y]
-                lignes_finales.append(tranche)
-                debut_trouve = False
-        n = n + 1
-    if debut_trouve == True:
-        lignes_finales.append(matrice[start_y: len(matrice)])
+    debut = None
+
+    for y in range(len(somme)):
+        if somme[y] > seuil and debut is None:
+            debut = y
+        elif somme[y] <= seuil and debut is not None:
+            lignes_finales.append(matrice[debut:y])
+            debut = None
+
+    if debut is not None:
+        lignes_finales.append(matrice[debut:])
+
     return lignes_finales
 
 
-def decoupage_vertical(liste_matrice):
+
+def decoupage_vertical(liste_matrice, seuil=5):
     images_finales = []
+
     for matrice in liste_matrice:
-        # somme verticale → on somme sur les colonnes
-        somme = np.sum(matrice, axis=1)
+        # Profil vertical : somme des pixels par colonne
+        somme = np.sum(matrice, axis=0)
 
-        lignes_finales = []
-        n = 0
-        debut_trouve = False
-        start_x = 0
+        lettres = []
+        debut = None
 
-        while n < len(somme):
-            if somme[n] != 0:
-                if not debut_trouve:
-                    start_x = n
-                    debut_trouve = True
-            else:
-                if debut_trouve:
-                    end_x = n
-                    tranche = matrice[start_x:end_x, :]
-                    lignes_finales.append(tranche)
-                    debut_trouve = False
-            n += 1
+        for x in range(len(somme)):
+            if somme[x] > seuil and debut is None:
+                # Début d'une lettre
+                debut = x
 
-        if debut_trouve:
-            lignes_finales.append(matrice[start_x:len(matrice), :])
+            elif somme[x] <= seuil and debut is not None:
+                # Fin d'une lettre
+                lettres.append(matrice[:, debut:x])
+                debut = None
 
-        images_finales.append(lignes_finales)
+        # Si une lettre se termine à la fin de l'image
+        if debut is not None:
+            lettres.append(matrice[:, debut:])
+
+        images_finales.append(lettres)
 
     return images_finales
+
 
 
 def remplissage1(liste_images,resolution=28):
