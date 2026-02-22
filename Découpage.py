@@ -13,14 +13,13 @@ def binarise(image, seuil=200):
 
 
 def binarise2(image):
-    # Binarisation automatique + inversion pour avoir texte = 1
     _, img_bin = cv2.threshold(image, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     return img_bin
 
 
 
 
-def decoupage_horizontal(matrice, seuil=5):
+def decoupage_horizontal(matrice, seuil=1):
     somme = np.sum(matrice, axis=1)
     lignes_finales = []
     debut = None
@@ -39,11 +38,10 @@ def decoupage_horizontal(matrice, seuil=5):
 
 
 
-def decoupage_vertical(liste_matrice, seuil=5):
+def decoupage_vertical(liste_matrice, seuil=1):
     images_finales = []
 
     for matrice in liste_matrice:
-        # Profil vertical : somme des pixels par colonne
         somme = np.sum(matrice, axis=0)
 
         lettres = []
@@ -51,15 +49,12 @@ def decoupage_vertical(liste_matrice, seuil=5):
 
         for x in range(len(somme)):
             if somme[x] > seuil and debut is None:
-                # Début d'une lettre
                 debut = x
 
             elif somme[x] <= seuil and debut is not None:
-                # Fin d'une lettre
                 lettres.append(matrice[:, debut:x])
                 debut = None
 
-        # Si une lettre se termine à la fin de l'image
         if debut is not None:
             lettres.append(matrice[:, debut:])
 
@@ -110,7 +105,7 @@ def remplissage1(liste_images,resolution=28):
 
 
 def remplissage2(liste_images, resolution=28):
-    nouvelle_images = [] 
+    nouvelle_images = []
     for image in liste_images:
         hauteur, largeur = image.shape
         manque_h = resolution - hauteur
