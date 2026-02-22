@@ -65,8 +65,45 @@ def tester_decoupage(path_image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
+print("exemple 1")
 
 if __name__ == "__main__":
-    image_path = "img_9.png" 
+    image_path = "1.png" 
     tester_decoupage(image_path)
+
+print("exemple 2")
+
+if __name__ == "__main__":
+    image_path = "2.png" 
+    tester_decoupage(image_path)
+
+print("exemple 3")
+
+if __name__ == "__main__":
+    image_path = "3.png" 
+    tester_decoupage(image_path)
+
+print("exemple 4")
+
+if __name__ == "__main__":
+    image_path = "4.png" 
+    tester_decoupage(image_path)
+
+print("exemple 5")
+
+if __name__ == "__main__":
+    image_path = "5.png" 
+    tester_decoupage(image_path)
+
+print("exemple 6")
+
+if __name__ == "__main__":
+    image_path = "6.png" 
+    tester_decoupage(image_path)
+
+print("exemple 7")
+
+if __name__ == "__main__":
+    image_path = "7.png" 
+    tester_decoupage(image_path)
+
