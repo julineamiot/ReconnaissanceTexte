@@ -36,29 +36,36 @@ def decoupage_horizontal(matrice):
 
 
 def decoupage_vertical(liste_matrice):
-    images_finales=[]
+    images_finales = []
     for matrice in liste_matrice:
-        somme = np.sum(matrice, axis=2)
+        # somme verticale → on somme sur les colonnes
+        somme = np.sum(matrice, axis=1)
+
         lignes_finales = []
         n = 0
         debut_trouve = False
-        start_y = 0
+        start_x = 0
+
         while n < len(somme):
             if somme[n] != 0:
-                if debut_trouve == False:
-                    start_y = n
+                if not debut_trouve:
+                    start_x = n
                     debut_trouve = True
             else:
-                if debut_trouve == True:
-                    end_y = n
-                    tranche = matrice[start_y: end_y]
+                if debut_trouve:
+                    end_x = n
+                    tranche = matrice[start_x:end_x, :]
                     lignes_finales.append(tranche)
                     debut_trouve = False
-            n = n + 1
-        if debut_trouve == True:
-            lignes_finales.append(matrice[start_y: len(matrice)])
+            n += 1
+
+        if debut_trouve:
+            lignes_finales.append(matrice[start_x:len(matrice), :])
+
         images_finales.append(lignes_finales)
+
     return images_finales
+
 
 def remplissage1(liste_images,resolution=28):
     nouvelles_images=[]
