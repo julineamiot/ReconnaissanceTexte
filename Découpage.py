@@ -1,15 +1,21 @@
 import numpy as np
-def binarise(image):
-    for i in range(len(image)):
-        for j in range(len(image[0])):
-            if image[i][j]>200:
-                image[i][j] = 1
+
+def binarise(image, seuil=200):
+    h, w = image.shape
+    for i in range(h):
+        for j in range(w):
+            if image[i][j] <= seuil:
+                image[i][j] = 0   # texte sombre → 0
             else:
-                image[i][j] = 0
+                image[i][j] = 1   # fond clair → 1
 
 
-def binarise2(image,seuil=200):
-    return np.where(image <= seuil, 1, 0)
+
+def binarise2(image, seuil=200):
+    # texte sombre → 0
+    # fond clair → 1
+    return np.where(image > seuil, 1, 0)
+
 
 
 def decoupage_horizontal(matrice):
