@@ -59,12 +59,20 @@ def tester_decoupage(path_image):
             index = np.argmax(resultat[-1])
             letter = EMNIST_LABELS[index]
             ligne_txt += letter
-            print(resultat)
+            #print(resultat)
         ligne_txt+="\n"
     print(ligne_txt)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+if __name__ == "__main__":
+    image_path = "img_1.png"
+    tester_decoupage(image_path)
+
+    image_path2 = "img_2.png"
+    tester_decoupage(image_path)
+
+"""
 print("exemple 1")
 
 if __name__ == "__main__":
@@ -105,6 +113,6 @@ print("exemple 7")
 
 if __name__ == "__main__":
     image_path = "7.png" 
-    tester_decoupage(image_path)
+    tester_decoupage(image_path)"""
 
 
