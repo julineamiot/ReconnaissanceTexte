@@ -219,7 +219,6 @@ def input_Mnist_trad():
     xtest = xtest / 255.0
     return (xtrain, label_train), (xtest, label_test)
 
-(x_train, label_train), (x_test, label_test)=input_Mnist_trad()
 def label_trad(label, classes=47):
     vecteur = np.zeros((1, classes))
     vecteur[0][label] = 1
