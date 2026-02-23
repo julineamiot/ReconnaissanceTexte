@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-from Reseaux_lettre import Neuronneclass
+from Reseaux_lettres import Neuronneclass
 
-from Decoupage import (
+from Découpage import (
     binarise2,
     decoupage_horizontal,
     decoupage_vertical,
@@ -106,4 +106,5 @@ print("exemple 7")
 if __name__ == "__main__":
     image_path = "7.png" 
     tester_decoupage(image_path)
+
 
