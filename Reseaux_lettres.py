@@ -151,8 +151,63 @@ class Neuronneclass:
             somme += liste[i]
         for i in range(len(liste)):
             liste[i] = liste[i]/somme
+    def load_reseau(self, nom_fichier="reseau_complet.txt"):
+        print(f"Chargement depuis {nom_fichier}...")
+        try:
+            # On charge tout le grand vecteur
+            grand_vecteur = np.loadtxt(nom_fichier)
 
+            idx_courant = 0  # Curseur pour savoir où on en est dans le fichier
 
+            # On reconstruit couche par couche en utilisant self.neuronnes pour connaître les tailles
+            for i in range(len(self.neuronnes) - 1):
+                n_entree = self.neuronnes[i]
+                n_sortie = self.neuronnes[i + 1]
+
+                # --- Récupération des POIDS ---
+                taille_w = n_entree * n_sortie
+                # On découpe le morceau correspondant aux poids
+                valeurs_w = grand_vecteur[idx_courant: idx_courant + taille_w]
+                # On le remet à la bonne forme (matrice)
+                self.poids[i] = valeurs_w.reshape(n_entree, n_sortie)
+                # On avance le curseur
+                idx_courant += taille_w
+
+                # --- Récupération des BIAIS ---
+                taille_b = n_sortie
+                # On découpe le morceau correspondant aux biais
+                valeurs_b = grand_vecteur[idx_courant: idx_courant + taille_b]
+                # On le remet à la bonne forme (vecteur ligne)
+                self.biais[i] = valeurs_b.reshape(1, n_sortie)
+                # On avance le curseur
+                idx_courant += taille_b
+
+            print("Réseau chargé et reconstruit avec succès.")
+
+        except Exception as e:
+            print("Erreur critique au chargement :", e)
+            print(
+                "Vérifie que le fichier existe et que l'architecture (self.neuronnes) est IDENTIQUE à celle de la sauvegarde.")
+####1@
+
+    # --- SAUVEGARDE EN UN SEUL FICHIER ---
+    def save_reseau(self, nom_fichier="reseau_complet.txt"):
+        print(f"Sauvegarde dans {nom_fichier}...")
+        elements_a_sauvegarder = []
+
+        # On parcourt chaque couche
+        for i in range(len(self.poids)):
+            # On aplatit (flatten) la matrice de poids et on l'ajoute à la liste
+            elements_a_sauvegarder.append(self.poids[i].flatten())
+            # On aplatit le vecteur de biais et on l'ajoute
+            elements_a_sauvegarder.append(self.biais[i].flatten())
+
+        # On colle tout en un seul grand vecteur 1D
+        grand_vecteur = np.concatenate(elements_a_sauvegarder)
+
+        # On sauvegarde ce vecteur dans un seul fichier texte
+        np.savetxt(nom_fichier, grand_vecteur)
+        print("Sauvegarde terminée.")
 def input_Mnist_trad():
     dataloader = MnistDataloader()
     (x_train, label_train), (x_test, label_test) = dataloader.load_data()
@@ -170,6 +225,8 @@ def label_trad(label, classes=47):
     vecteur[0][label] = 1
     return vecteur
 
+
+
 def trainingtesting(x_train,label_train,x_test, label_test,boucle=10):
 
     perc = Neuronneclass([784, 400, 150, 47], 0.12)
@@ -183,6 +240,7 @@ def trainingtesting(x_train,label_train,x_test, label_test,boucle=10):
             resultats = perc.feedforward(pixel)
             delta = perc.delta_mat(label, resultats)
             perc.backwardpropagation2(delta, resultats)
+    perc.save_reseau()
     #test
     somme = 0
     for i in range(len(x_test)):
@@ -194,7 +252,6 @@ def trainingtesting(x_train,label_train,x_test, label_test,boucle=10):
         if reponse == label_test[i]:
             somme += 1
     print("L'IA reconnait suite a son entrainement :",(somme/len(label_test))*100,"% des images")
-
 def traintrain(x_train,label_train,x_test, label_test,boucle=5):
     perc = Neuronneclass([784, 128, 64, 10], 0.05)
     # training
@@ -207,7 +264,6 @@ def traintrain(x_train,label_train,x_test, label_test,boucle=5):
             resultats = perc.feedforward(pixel)
             delta = perc.delta_mat(label, resultats)
             perc.backwardpropagation2(delta, resultats)
-    
     # test
     somme=0
     for i in range(len(x_train)):
@@ -221,32 +277,20 @@ def traintrain(x_train,label_train,x_test, label_test,boucle=5):
     print("L'IA reconnait suite a son entrainement :",(somme/len(label_train))*100,"% des images")
 
 
-trainingtesting(x_train, label_train,x_test, label_test)
+def test(x_train, label_train, x_test, label_test, boucle=5):
+    perc = Neuronneclass([784, 128, 64, 10], 0.12)
+
+    somme = 0
+    for i in range(len(x_test)):
+        pixel = x_test[i].reshape(1, -1)
+
+        resultats = perc.feedforward(pixel)
+        reponse = np.argmax(resultats[-1])
+
+        if reponse == label_test[i]:
+            somme += 1
+    print("L'IA reconnait suite a son entrainement :", (somme / len(x_test)) * 100, "% des images")
+
+#trainingtesting(x_train, label_train,x_test, label_test)
+#test(x_train, label_train, x_test, label_test, boucle=5)
 #traintrain(x_train, label_train,x_test, label_test)
-
-
-
-"""    def load_weights(self, filename="poids_reseau.npz"):  # pour utiliser les données obtenue avec l'entrainement précédant
-        data = np.load(filename)
-        self.W = {}
-        self.b = {}
-
-        for key in data.files:
-            if key.startswith("W"):
-                idx = int(key[1:])
-                self.W[idx] = data[key]
-            elif key.startswith("b"):
-                idx = int(key[1:])
-                self.b[idx] = data[key]
-
-        # Empêche forward de réinitialiser les poids
-        self.initialized = True
-
-    def save_initial_weights(self, filename="poids_initiaux.npz"):
-        # np.savez exige des clés string
-        W_str = {f"W{k}": v for k, v in self.W.items()}
-        b_str = {f"b{k}": v for k, v in self.b.items()}
-
-        all_params = {**W_str, **b_str}
-
-        np.savez(filename, **all_params)"""
