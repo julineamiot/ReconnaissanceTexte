@@ -152,7 +152,7 @@ class Neuronneclass:
         for i in range(len(liste)):
             liste[i] = liste[i]/somme
     def load_reseau(self, nom_fichier="reseau_complet.txt"):
-        print(f"Chargement depuis {nom_fichier}...")
+        #print(f"Chargement depuis {nom_fichier}...")
         try:
             # On charge tout le grand vecteur
             grand_vecteur = np.loadtxt(nom_fichier)
@@ -182,7 +182,7 @@ class Neuronneclass:
                 # On avance le curseur
                 idx_courant += taille_b
 
-            print("Réseau chargé et reconstruit avec succès.")
+            #print("Réseau chargé et reconstruit avec succès.")
 
         except Exception as e:
             print("Erreur critique au chargement :", e)
@@ -218,6 +218,7 @@ def input_Mnist_trad():
     xtest = xtest.reshape(xtest.shape[0], -1)
     xtest = xtest / 255.0
     return (xtrain, label_train), (xtest, label_test)
+
 
 def label_trad(label, classes=47):
     vecteur = np.zeros((1, classes))
