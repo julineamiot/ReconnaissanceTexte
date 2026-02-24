@@ -70,7 +70,7 @@ if __name__ == "__main__":
     tester_decoupage(image_path)
 
     image_path2 = "img_2.png"
-    tester_decoupage(image_path)
+    tester_decoupage(image_path2)
 
 """
 print("exemple 1")
@@ -114,5 +114,6 @@ print("exemple 7")
 if __name__ == "__main__":
     image_path = "7.png" 
     tester_decoupage(image_path)"""
+
 
 
